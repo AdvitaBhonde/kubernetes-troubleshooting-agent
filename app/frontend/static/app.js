@@ -435,9 +435,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initial load
     loadClusterStatus();
-    loadNamespaces().then(() => {
-        refreshClusterData();
+    loadNamespaces().then(async () => {
+        await refreshClusterData();
         // Automatically run initial diagnosis on startup
-        runDiagnostics();
+        await runDiagnostics();
+
+        // Check URL parameter for specific tab selection
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestedTab = urlParams.get("tab");
+        if (requestedTab) {
+            const targetBtn = document.querySelector(`.tab-btn[data-tab="${requestedTab}"]`);
+            if (targetBtn) {
+                targetBtn.click();
+            }
+        }
     });
 });

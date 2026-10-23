@@ -4,7 +4,6 @@
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Client-326CE5?style=flat&logo=kubernetes)](https://kubernetes.io)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat&logo=python)](https://python.org)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://docker.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 An intelligent, read-only diagnostic observability agent designed to help SREs, DevOps engineers, and developers diagnose Kubernetes workload failures in seconds. It inspects live or simulated clusters, evaluates 10 deterministic failure rules, sanitizes sensitive credentials, and generates evidence-backed root cause analyses using either local zero-cost reasoning or cloud LLMs (AWS Bedrock / OpenAI).
 
@@ -199,7 +198,6 @@ kubernetes-troubleshooting-agent/
 ├── Makefile                        # Common build, test, and run tasks
 ├── .env.example                    # Environment template with zero secrets
 ├── .gitignore                      # Git exclusion rules for secrets, kubeconfigs
-├── LICENSE                         # MIT License
 └── README.md                       # Complete documentation
 ```
 
@@ -468,13 +466,14 @@ All 32 test cases cover:
 
 ## 📸 Dashboard Screenshots
 
-*(Placeholders for UI capture)*
+### 1. Cluster Overview & Health Metrics
+![Cluster Overview](docs/images/dashboard_overview.png)
 
-| Section | Preview |
-|---|---|
-| **Overview & Metrics** | ![Metrics Overview](docs/images/dashboard_overview.png) *(Displays Pod Health, Critical Findings, and Warning Events)* |
-| **Root Cause Findings** | ![Root Cause Analysis](docs/images/findings_view.png) *(Displays Verified Evidence, Root Cause, and Copyable Commands)* |
-| **AI Executive Summary** | ![AI Report](docs/images/ai_report.png) *(Distinguishes Confirmed Facts from Hypotheses)* |
+### 2. Verified Root Cause Findings & Remediation Runbook
+![Root Cause Findings](docs/images/findings_view.png)
+
+### 3. AI-Assisted Executive Diagnostic Report
+![AI Executive Report](docs/images/ai_report.png)
 
 ---
 
@@ -482,4 +481,3 @@ All 32 test cases cover:
 
 - **Author**: Advita Bhonde
 - **GitHub**: [@AdvitaBhonde](https://github.com/AdvitaBhonde)
-- **License**: [MIT License](LICENSE)
