@@ -1,0 +1,400 @@
+{
+  "namespaces": ["default", "production", "staging", "kube-system"],
+  "cluster_info": {
+    "server_version": "v1.30.2+k3s1",
+    "context_name": "demo-cluster",
+    "node_count": 3,
+    "demo_mode": true
+  },
+  "pods": [
+    {
+      "name": "payment-processor-7c6d9bf8-2k9ls",
+      "namespace": "default",
+      "phase": "Running",
+      "pod_ip": "10.244.1.45",
+      "node_name": "node-worker-1",
+      "restarts": 14,
+      "conditions": {
+        "Initialized": true,
+        "Ready": false,
+        "ContainersReady": false,
+        "PodScheduled": true
+      },
+      "created_at": "2026-10-23T18:30:00Z",
+      "containers": [
+        {
+          "name": "processor",
+          "image": "internal.registry.io/fintech/payment-processor:v1.8.2",
+          "ready": false,
+          "restart_count": 14,
+          "current_state": {
+            "state": "waiting",
+            "reason": "CrashLoopBackOff",
+            "message": "back-off 5m0s restarting failed container=processor pod=payment-processor-7c6d9bf8-2k9ls_default"
+          },
+          "last_state": {
+            "state": "terminated",
+            "reason": "Error",
+            "exit_code": 1,
+            "message": "Process terminated with exit code 1"
+          },
+          "ports": [8080],
+          "cpu_request": "250m",
+          "memory_request": "512Mi",
+          "cpu_limit": "500m",
+          "memory_limit": "1Gi"
+        }
+      ],
+      "events": [
+        "Back-off restarting failed container processor in pod payment-processor-7c6d9bf8-2k9ls_default",
+        "Error: failed to start container: exit code 1"
+      ],
+      "logs": "2026-10-23 20:15:01 [INFO] Initializing payment-processor v1.8.2\n2026-10-23 20:15:02 [INFO] Loading configuration from /app/config.json\n2026-10-23 20:15:03 [ERROR] Failed to connect to database host postgres-db.default.svc.cluster.local:5432\n2026-10-23 20:15:03 [FATAL] Exception in thread 'main' java.net.ConnectException: Connection refused (Connection refused)\n\tat java.base/sun.nio.ch.SocketChannelImpl.checkConnect(SocketChannelImpl.java:874)\n\tat com.payment.service.DBPool.connect(DBPool.java:94)\n\tat com.payment.service.Application.main(Application.java:42)",
+      "previous_logs": "2026-10-23 20:10:00 [INFO] Initializing payment-processor v1.8.2\n2026-10-23 20:10:02 [FATAL] Connection refused: postgres-db.default.svc.cluster.local:5432"
+    },
+    {
+      "name": "web-frontend-5b4d79c6-r8v2m",
+      "namespace": "default",
+      "phase": "Pending",
+      "pod_ip": null,
+      "node_name": "node-worker-2",
+      "restarts": 0,
+      "conditions": {
+        "Initialized": true,
+        "Ready": false,
+        "ContainersReady": false,
+        "PodScheduled": true
+      },
+      "created_at": "2026-10-23T19:45:00Z",
+      "containers": [
+        {
+          "name": "frontend",
+          "image": "mycorp.internal/web-portal:v2.9.0-release-candidate",
+          "ready": false,
+          "restart_count": 0,
+          "current_state": {
+            "state": "waiting",
+            "reason": "ImagePullBackOff",
+            "message": "Back-off pulling image 'mycorp.internal/web-portal:v2.9.0-release-candidate'"
+          },
+          "last_state": null,
+          "ports": [80],
+          "cpu_request": "100m",
+          "memory_request": "128Mi"
+        }
+      ],
+      "events": [
+        "Pulling image 'mycorp.internal/web-portal:v2.9.0-release-candidate'",
+        "Failed to pull image 'mycorp.internal/web-portal:v2.9.0-release-candidate': rpc error: code = NotFound desc = failed to pull and unpack image 'mycorp.internal/web-portal:v2.9.0-release-candidate': not found",
+        "Error: ErrImagePull",
+        "Back-off pulling image 'mycorp.internal/web-portal:v2.9.0-release-candidate'"
+      ],
+      "logs": null,
+      "previous_logs": null
+    },
+    {
+      "name": "ml-inference-worker-67f94bb8-p5x4q",
+      "namespace": "default",
+      "phase": "Running",
+      "pod_ip": "10.244.2.19",
+      "node_name": "node-worker-2",
+      "restarts": 6,
+      "conditions": {
+        "Initialized": true,
+        "Ready": false,
+        "ContainersReady": false,
+        "PodScheduled": true
+      },
+      "created_at": "2026-10-23T19:00:00Z",
+      "containers": [
+        {
+          "name": "inference-engine",
+          "image": "pytorch/torchserve:0.9.0-cpu",
+          "ready": false,
+          "restart_count": 6,
+          "current_state": {
+            "state": "waiting",
+            "reason": "CrashLoopBackOff",
+            "message": "back-off 2m40s restarting failed container=inference-engine"
+          },
+          "last_state": {
+            "state": "terminated",
+            "reason": "OOMKilled",
+            "exit_code": 137,
+            "message": "Container terminated because it exceeded its memory limit"
+          },
+          "ports": [8085],
+          "cpu_request": "500m",
+          "memory_request": "256Mi",
+          "cpu_limit": "1000m",
+          "memory_limit": "512Mi"
+        }
+      ],
+      "events": [
+        "Back-off restarting failed container inference-engine in pod ml-inference-worker-67f94bb8-p5x4q_default",
+        "Container inference-engine failed: OOMKilled"
+      ],
+      "logs": "2026-10-23 20:18:22 [INFO] Loading PyTorch model weights tensor.pt into RAM...\n2026-10-23 20:18:25 [INFO] Allocating model buffer: 480 MB requested...\n2026-10-23 20:18:27 [FATAL] Out of memory: Kill process 14210 (python) score 950 or sacrifice child. Process 14210 was killed by cgroup OOM killer.",
+      "previous_logs": "2026-10-23 20:15:30 [INFO] Allocating model buffer: 480 MB requested...\nKilled"
+    },
+    {
+      "name": "analytics-batch-pod-89bdc67-t7v9w",
+      "namespace": "default",
+      "phase": "Pending",
+      "pod_ip": null,
+      "node_name": null,
+      "restarts": 0,
+      "conditions": {
+        "PodScheduled": false
+      },
+      "created_at": "2026-10-23T20:10:00Z",
+      "containers": [
+        {
+          "name": "spark-worker",
+          "image": "spark:3.5.1",
+          "ready": false,
+          "restart_count": 0,
+          "current_state": {
+            "state": "waiting",
+            "reason": "ContainerCreating",
+            "message": null
+          },
+          "last_state": null,
+          "cpu_request": "8000m",
+          "memory_request": "32Gi",
+          "cpu_limit": "8000m",
+          "memory_limit": "32Gi"
+        }
+      ],
+      "events": [
+        "0/3 nodes are available: 3 Insufficient memory, 1 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod."
+      ],
+      "logs": null,
+      "previous_logs": null
+    },
+    {
+      "name": "auth-gateway-784f4dc9-9zk1q",
+      "namespace": "default",
+      "phase": "Running",
+      "pod_ip": "10.244.1.52",
+      "node_name": "node-worker-1",
+      "restarts": 3,
+      "conditions": {
+        "Initialized": true,
+        "Ready": false,
+        "ContainersReady": false,
+        "PodScheduled": true
+      },
+      "created_at": "2026-10-23T19:15:00Z",
+      "containers": [
+        {
+          "name": "gateway",
+          "image": "auth-proxy:v1.2.0",
+          "ready": false,
+          "restart_count": 3,
+          "current_state": {
+            "state": "running",
+            "reason": null,
+            "message": null
+          },
+          "last_state": {
+            "state": "terminated",
+            "reason": "Error",
+            "exit_code": 143,
+            "message": "Container failed liveness probe"
+          },
+          "ports": [8080],
+          "cpu_request": "200m",
+          "memory_request": "256Mi"
+        }
+      ],
+      "events": [
+        "Liveness probe failed: Get \"http://10.244.1.52:8080/healthz\": dial tcp 10.244.1.52:8080: connect: connection refused",
+        "Readiness probe failed: HTTP probe failed with statuscode: 503"
+      ],
+      "logs": "2026-10-23 20:20:10 [INFO] Auth gateway listening on :8080\n2026-10-23 20:20:15 [WARN] Health check timeout: Redis session cache unreachable\n2026-10-23 20:20:16 [ERROR] /healthz returned 503 Service Unavailable: Redis downstream failure",
+      "previous_logs": null
+    },
+    {
+      "name": "redis-master-0",
+      "namespace": "default",
+      "phase": "Running",
+      "pod_ip": "10.244.1.30",
+      "node_name": "node-worker-1",
+      "restarts": 0,
+      "conditions": {
+        "Initialized": true,
+        "Ready": true,
+        "ContainersReady": true,
+        "PodScheduled": true
+      },
+      "created_at": "2026-10-23T16:00:00Z",
+      "containers": [
+        {
+          "name": "redis",
+          "image": "redis:7.2-alpine",
+          "ready": true,
+          "restart_count": 0,
+          "current_state": {
+            "state": "running",
+            "reason": null,
+            "message": null
+          },
+          "last_state": null,
+          "ports": [6379],
+          "cpu_request": "100m",
+          "memory_request": "128Mi"
+        }
+      ],
+      "events": [],
+      "logs": "1:M 23 Oct 2026 16:00:02.123 * Ready to accept connections tcp",
+      "previous_logs": null
+    }
+  ],
+  "deployments": [
+    {
+      "name": "order-fulfillment-service",
+      "namespace": "default",
+      "desired_replicas": 3,
+      "ready_replicas": 0,
+      "available_replicas": 0,
+      "updated_replicas": 3,
+      "selector": {
+        "app": "order-fulfillment"
+      },
+      "conditions": [
+        "ReplicaFailure: Pod creation failed: admission webhook denied request"
+      ]
+    },
+    {
+      "name": "web-frontend-deployment",
+      "namespace": "default",
+      "desired_replicas": 2,
+      "ready_replicas": 0,
+      "available_replicas": 0,
+      "updated_replicas": 2,
+      "selector": {
+        "app": "web-frontend"
+      },
+      "conditions": [
+        "Progressing: ReplicaSet 'web-frontend-5b4d79c6' has timed out progressing"
+      ]
+    },
+    {
+      "name": "redis-deployment",
+      "namespace": "default",
+      "desired_replicas": 1,
+      "ready_replicas": 1,
+      "available_replicas": 1,
+      "updated_replicas": 1,
+      "selector": {
+        "app": "redis"
+      },
+      "conditions": [
+        "Available: Deployment has minimum availability."
+      ]
+    }
+  ],
+  "services": [
+    {
+      "name": "billing-internal-svc",
+      "namespace": "default",
+      "service_type": "ClusterIP",
+      "cluster_ip": "10.96.102.50",
+      "ports": [
+        {"port": 80, "target_port": 8080, "protocol": "TCP"}
+      ],
+      "selector": {
+        "app": "billing-api"
+      },
+      "endpoints": [],
+      "has_endpoints": false
+    },
+    {
+      "name": "redis-service",
+      "namespace": "default",
+      "service_type": "ClusterIP",
+      "cluster_ip": "10.96.10.15",
+      "ports": [
+        {"port": 6379, "target_port": 6379, "protocol": "TCP"}
+      ],
+      "selector": {
+        "app": "redis"
+      },
+      "endpoints": ["10.244.1.30:6379"],
+      "has_endpoints": true
+    }
+  ],
+  "events": [
+    {
+      "type": "Warning",
+      "reason": "BackOff",
+      "message": "Back-off restarting failed container processor in pod payment-processor-7c6d9bf8-2k9ls_default",
+      "resource_kind": "Pod",
+      "resource_name": "payment-processor-7c6d9bf8-2k9ls",
+      "namespace": "default",
+      "count": 14,
+      "last_seen": "2026-10-23T20:20:00Z"
+    },
+    {
+      "type": "Warning",
+      "reason": "Failed",
+      "message": "Failed to pull image 'mycorp.internal/web-portal:v2.9.0-release-candidate': rpc error: code = NotFound desc = failed to pull and unpack image 'mycorp.internal/web-portal:v2.9.0-release-candidate': not found",
+      "resource_kind": "Pod",
+      "resource_name": "web-frontend-5b4d79c6-r8v2m",
+      "namespace": "default",
+      "count": 8,
+      "last_seen": "2026-10-23T20:21:00Z"
+    },
+    {
+      "type": "Warning",
+      "reason": "OOMKilled",
+      "message": "Container inference-engine failed with exit code 137 (OOMKilled)",
+      "resource_kind": "Pod",
+      "resource_name": "ml-inference-worker-67f94bb8-p5x4q",
+      "namespace": "default",
+      "count": 6,
+      "last_seen": "2026-10-23T20:19:00Z"
+    },
+    {
+      "type": "Warning",
+      "reason": "FailedScheduling",
+      "message": "0/3 nodes are available: 3 Insufficient memory, 1 Insufficient cpu.",
+      "resource_kind": "Pod",
+      "resource_name": "analytics-batch-pod-89bdc67-t7v9w",
+      "namespace": "default",
+      "count": 5,
+      "last_seen": "2026-10-23T20:10:00Z"
+    },
+    {
+      "type": "Warning",
+      "reason": "Unhealthy",
+      "message": "Liveness probe failed: Get \"http://10.244.1.52:8080/healthz\": dial tcp 10.244.1.52:8080: connect: connection refused",
+      "resource_kind": "Pod",
+      "resource_name": "auth-gateway-784f4dc9-9zk1q",
+      "namespace": "default",
+      "count": 7,
+      "last_seen": "2026-10-23T20:20:30Z"
+    },
+    {
+      "type": "Warning",
+      "reason": "FailedCreate",
+      "message": "admission webhook 'policy.validator.k8s' denied request: required labels missing",
+      "resource_kind": "Deployment",
+      "resource_name": "order-fulfillment-service",
+      "namespace": "default",
+      "count": 4,
+      "last_seen": "2026-10-23T20:05:00Z"
+    },
+    {
+      "type": "Warning",
+      "reason": "DNSLookupFailure",
+      "message": "CoreDNS queries degraded on worker node node-worker-1: dial tcp 10.96.0.10:53: i/o timeout",
+      "resource_kind": "Node",
+      "resource_name": "node-worker-1",
+      "namespace": "kube-system",
+      "count": 3,
+      "last_seen": "2026-10-23T20:15:00Z"
+    }
+  ]
+}

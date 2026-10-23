@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: troubleshooter-config
+  namespace: k8s-agent
+  labels:
+    app.kubernetes.io/name: kubernetes-troubleshooting-agent
+data:
+  DEMO_MODE: "false"
+  AI_PROVIDER: "rules"
+  DEFAULT_NAMESPACE: "default"
+  MAX_LOG_LINES: "150"
+  MAX_EVENTS: "50"
+  AWS_REGION: "us-east-1"

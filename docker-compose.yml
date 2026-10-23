@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  k8s-troubleshooter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kubernetes-troubleshooting-agent:latest
+    container_name: k8s-troubleshooting-agent
+    ports:
+      - "8000:8000"
+    environment:
+      - DEMO_MODE=true
+      - AI_PROVIDER=rules
+      - DEFAULT_NAMESPACE=default
+      - LOG_LEVEL=INFO
+    # To connect to a local cluster from Docker Desktop:
+    # volumes:
+    #   - ~/.kube/config:/home/appuser/.kube/config:ro
+    # environment:
+    #   - KUBECONFIG=/home/appuser/.kube/config
+    #   - DEMO_MODE=false
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

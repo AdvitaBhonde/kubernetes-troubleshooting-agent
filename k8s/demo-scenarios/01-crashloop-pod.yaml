@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo-crashloop-pod
+  namespace: default
+  labels:
+    app: demo-crashloop
+spec:
+  containers:
+    - name: crash-container
+      image: busybox:1.36
+      command: ["sh", "-c", "echo 'Starting service...'; sleep 3; echo 'FATAL: database config missing'; exit 1"]

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-orphan-service
+  namespace: default
+spec:
+  selector:
+    app: billing-v2-backend  # Intentionally no pods with this label
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

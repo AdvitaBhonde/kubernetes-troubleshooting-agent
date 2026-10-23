@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Kubernetes Troubleshooting Agent</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Top Navbar -->
+        <header class="navbar">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">K8s AI Troubleshooter</h1>
+                    <span class="brand-subtitle">Automated Kubernetes Diagnostic & Root Cause Agent</span>
+                </div>
+            </div>
+
+            <div class="nav-controls">
+                <div class="status-pill" id="cluster-status-pill">
+                    <span class="status-dot pulsing"></span>
+                    <span id="cluster-status-text">Checking Cluster...</span>
+                </div>
+                <div class="demo-badge hidden" id="demo-mode-badge">
+                    <span>DEMO SIMULATION</span>
+                </div>
+                <a href="/docs" target="_blank" class="nav-link">Swagger API Docs</a>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Toolbar -->
+            <section class="control-panel">
+                <div class="control-group">
+                    <label for="namespace-select">Namespace:</label>
+                    <select id="namespace-select" class="form-select">
+                        <option value="default">default</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="ai-provider-select">Reasoning Engine:</label>
+                    <select id="ai-provider-select" class="form-select">
+                        <option value="rules">Local Rule-Based (Zero-Cost)</option>
+                        <option value="bedrock">AWS Bedrock (Claude 3)</option>
+                        <option value="openai">OpenAI (GPT-4o-mini)</option>
+                    </select>
+                </div>
+
+                <div class="control-actions">
+                    <button id="btn-run-diagnostics" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                        Run Diagnostic Analysis
+                    </button>
+                    <button id="btn-refresh-data" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                        Refresh Cluster
+                    </button>
+                </div>
+            </section>
+
+            <!-- Metrics Overview -->
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">Pods Monitored</span>
+                        <span class="metric-icon">📦</span>
+                    </div>
+                    <div class="metric-value" id="metric-total-pods">-</div>
+                    <div class="metric-sub" id="metric-pod-breakdown">- healthy / - failing</div>
+                </div>
+
+                <div class="metric-card critical">
+                    <div class="metric-header">
+                        <span class="metric-label">Critical Findings</span>
+                        <span class="metric-icon">🚨</span>
+                    </div>
+                    <div class="metric-value" id="metric-critical-issues">-</div>
+                    <div class="metric-sub">Immediate action recommended</div>
+                </div>
+
+                <div class="metric-card warning">
+                    <div class="metric-header">
+                        <span class="metric-label">Warning Events</span>
+                        <span class="metric-icon">⚠️</span>
+                    </div>
+                    <div class="metric-value" id="metric-warning-events">-</div>
+                    <div class="metric-sub" id="metric-events-sub">Across namespace</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-label">Deployments & Svc</span>
+                        <span class="metric-icon">⚙️</span>
+                    </div>
+                    <div class="metric-value" id="metric-deployments">-</div>
+                    <div class="metric-sub" id="metric-deployments-sub">- deployments / - services</div>
+                </div>
+            </section>
+
+            <!-- Diagnostic Results View -->
+            <section class="diagnostic-section">
+                <div class="section-tabs">
+                    <button class="tab-btn active" data-tab="findings-tab">Root Cause Analysis & Findings</button>
+                    <button class="tab-btn" data-tab="ai-report-tab">AI Executive Report</button>
+                    <button class="tab-btn" data-tab="pods-tab">Pod Diagnostics</button>
+                    <button class="tab-btn" data-tab="workloads-tab">Deployments & Services</button>
+                    <button class="tab-btn" data-tab="events-tab">Cluster Events</button>
+                </div>
+
+                <!-- Tab 1: Findings & Root Causes -->
+                <div class="tab-content active" id="findings-tab">
+                    <div class="tab-toolbar">
+                        <div class="filter-group">
+                            <span class="filter-label">Filter Severity:</span>
+                            <button class="filter-chip active" data-severity="all">All</button>
+                            <button class="filter-chip chip-critical" data-severity="Critical">Critical</button>
+                            <button class="filter-chip chip-high" data-severity="High">High</button>
+                            <button class="filter-chip chip-medium" data-severity="Medium">Medium</button>
+                        </div>
+                        <span class="findings-count" id="findings-count-text">0 Issues Detected</span>
+                    </div>
+
+                    <div id="findings-container" class="findings-list">
+                        <div class="empty-state">
+                            <p>Click <strong>"Run Diagnostic Analysis"</strong> to inspect pods, logs, events, and identify root causes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: AI Report -->
+                <div class="tab-content" id="ai-report-tab">
+                    <div class="ai-report-card">
+                        <div class="ai-report-header">
+                            <div>
+                                <h3 id="ai-report-title">AI-Assisted Root Cause Diagnosis</h3>
+                                <p class="ai-provider-tag" id="ai-provider-badge">Provider: Local Rule-Based Engine</p>
+                            </div>
+                            <span class="verification-notice">⚠️ Read-Only Verification Required</span>
+                        </div>
+                        <div class="markdown-body" id="ai-markdown-content">
+                            <p class="placeholder-text">Run diagnostic analysis to view the AI-generated root cause breakdown and verified remediation plan.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Pods -->
+                <div class="tab-content" id="pods-tab">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Pod Name</th>
+                                    <th>Phase</th>
+                                    <th>Restarts</th>
+                                    <th>Node</th>
+                                    <th>Containers</th>
+                                    <th>State & Reason</th>
+                                    <th>Diagnostics</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pods-table-body">
+                                <tr><td colspan="7" class="text-center">Loading pods...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Workloads -->
+                <div class="tab-content" id="workloads-tab">
+                    <div class="workloads-container">
+                        <div class="workload-column">
+                            <h3>Deployments</h3>
+                            <div id="deployments-container" class="card-list">Loading deployments...</div>
+                        </div>
+                        <div class="workload-column">
+                            <h3>Services & Endpoints</h3>
+                            <div id="services-container" class="card-list">Loading services...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 5: Events -->
+                <div class="tab-content" id="events-tab">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Reason</th>
+                                    <th>Resource</th>
+                                    <th>Count</th>
+                                    <th>Message</th>
+                                </tr>
+                            </thead>
+                            <tbody id="events-table-body">
+                                <tr><td colspan="5" class="text-center">Loading events...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Log Inspection Modal -->
+        <div id="log-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Pod Log Inspector</h3>
+                    <button class="modal-close" id="modal-close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="log-controls">
+                        <span id="log-meta">Inspecting sanitized container logs</span>
+                        <button class="btn btn-sm" id="btn-copy-log">Copy Logs</button>
+                    </div>
+                    <pre id="modal-log-viewer" class="code-viewer"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

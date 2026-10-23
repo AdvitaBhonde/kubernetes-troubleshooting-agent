@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo-imagepull-pod
+  namespace: default
+  labels:
+    app: demo-imagepull
+spec:
+  containers:
+    - name: pull-fail-container
+      image: non-existent-registry.internal/broken-app:v999.0.0
+      imagePullPolicy: Always
